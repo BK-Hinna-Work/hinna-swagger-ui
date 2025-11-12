@@ -1,0 +1,93 @@
+name: Monitor Hinna Repositories
+
+on:
+  repository_dispatch:
+    types: [api-updated]
+  workflow_dispatch:
+    inputs:
+      repo_name:
+        description: 'Repository name to scan'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-swagger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install -g @apidevtools/swagger-cli
+          npm install js-yaml axios
+
+      - name: Get repository information
+        id: repo-info
+        run: |
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            echo "REPO_NAME=${{ github.event.client_payload.repository }}" >> $GITHUB_OUTPUT
+            echo "REPO_URL=${{ github.event.client_payload.repository_url }}" >> $GITHUB_OUTPUT
+            echo "COMMIT_SHA=${{ github.event.client_payload.sha }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ inputs.repo_name }}" ]; then
+            echo "REPO_NAME=${{ inputs.repo_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Scan repository for API endpoints
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_NAME: ${{ steps.repo-info.outputs.REPO_NAME }}
+        run: |
+          node scripts/scan-repository.js
+
+      - name: Update central swagger.yaml
+        run: |
+          node scripts/update-swagger.js
+
+      - name: Validate OpenAPI specification
+        run: |
+          swagger-cli validate public/swagger.yaml
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          git diff --exit-code public/swagger.yaml || echo "CHANGED=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.CHANGED == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/swagger.yaml
+          git commit -m "Auto-update: API endpoints from ${{ steps.repo-info.outputs.REPO_NAME || 'periodic scan' }}"
+          git push
+
+      - name: Create summary
+        if: steps.check-changes.outputs.CHANGED == 'true'
+        run: |
+          echo "### ✅ Swagger Updated Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** ${{ steps.repo-info.outputs.REPO_NAME || 'Multiple repositories' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ steps.repo-info.outputs.COMMIT_SHA || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Updated:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View the updated documentation at: [GitHub Pages](https://yourusername.github.io/Hinna-API-Management-Swagger/)" >> $GITHUB_STEP_SUMMARY
+
+      - name: No changes detected
+        if: steps.check-changes.outputs.CHANGED != 'true'
+        run: |
+          echo "### ℹ️ No Changes Detected" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The API specification is already up to date." >> $GITHUB_STEP_SUMMARY

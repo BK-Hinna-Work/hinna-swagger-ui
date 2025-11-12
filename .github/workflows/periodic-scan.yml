@@ -1,0 +1,109 @@
+name: Periodic Repository Scan
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  scan-all-repos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install -g @apidevtools/swagger-cli
+          npm install js-yaml axios @octokit/rest
+
+      - name: List all Hinna repositories
+        id: list-repos
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ORG: ${{ github.repository_owner }}
+        run: |
+          node scripts/list-hinna-repos.js > repos.json
+          echo "Found $(jq length repos.json) repositories"
+          cat repos.json
+
+      - name: Scan all repositories
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ORG: ${{ github.repository_owner }}
+        run: |
+          node scripts/scan-all-repositories.js
+
+      - name: Generate consolidated swagger.yaml
+        run: |
+          node scripts/consolidate-swagger.js
+
+      - name: Validate OpenAPI specification
+        run: |
+          swagger-cli validate public/swagger.yaml || {
+            echo "::warning::OpenAPI validation failed, attempting auto-fix"
+            node scripts/fix-swagger.js
+            swagger-cli validate public/swagger.yaml
+          }
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          git diff --exit-code public/swagger.yaml || echo "CHANGED=true" >> $GITHUB_OUTPUT
+
+      - name: Generate change report
+        if: steps.check-changes.outputs.CHANGED == 'true'
+        run: |
+          node scripts/generate-change-report.js > change-report.md
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.CHANGED == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/swagger.yaml
+          git add -A docs/
+          git commit -m "Auto-update: Periodic scan of all Hinna repositories
+
+          $(cat change-report.md)"
+          git push
+
+      - name: Create detailed summary
+        run: |
+          echo "### 🔍 Periodic Scan Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Scan Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Repositories Scanned:** $(jq length repos.json)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.check-changes.outputs.CHANGED }}" == "true" ]; then
+            echo "### ✅ Changes Detected and Applied" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            cat change-report.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ℹ️ No Changes Detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "All API specifications are up to date." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-results-${{ github.run_number }}
+          path: |
+            repos.json
+            change-report.md
+          retention-days: 30

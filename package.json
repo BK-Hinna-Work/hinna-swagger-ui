@@ -1,0 +1,39 @@
+{
+  "name": "hinna-api-management-swagger",
+  "version": "1.0.0",
+  "description": "Centralized API documentation for Hinna microservices",
+  "main": "index.js",
+  "scripts": {
+    "scan": "node scripts/scan-repository.js",
+    "update": "node scripts/update-swagger.js",
+    "list-repos": "node scripts/list-hinna-repos.js",
+    "scan-all": "node scripts/scan-all-repositories.js",
+    "validate": "swagger-cli validate public/swagger.yaml",
+    "serve": "npx http-server public -p 8080",
+    "test": "npm run validate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ABC-Academy-of-Music/Hinna-API-Management-Swagger.git"
+  },
+  "keywords": [
+    "swagger",
+    "openapi",
+    "api-documentation",
+    "hinna"
+  ],
+  "author": "ABC Academy of Music",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ABC-Academy-of-Music/Hinna-API-Management-Swagger/issues"
+  },
+  "homepage": "https://github.com/ABC-Academy-of-Music/Hinna-API-Management-Swagger#readme",
+  "devDependencies": {
+    "@apidevtools/swagger-cli": "^4.0.4"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.0.2",
+    "axios": "^1.6.2",
+    "js-yaml": "^4.1.0"
+  }
+}
