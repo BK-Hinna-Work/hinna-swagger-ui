@@ -8,10 +8,21 @@ info:
     all repositories in the Hinna organization.
 
     ## Available Services
-    - Authentication Service
-    - Booking Service
-    - Email Service
-    - Chat Service
+    - **PAT (Process Automation Tool)**: Workflow automation and management (100 endpoints)
+    - **Payments**: Payment processing, invoices, payroll (122 endpoints)
+    - **Authentication**: User authentication and login (56 endpoints)
+    - **Chat**: Messaging and real-time communication (38 endpoints)
+    - **Calendar**: Booking and scheduling (36 endpoints)
+    - **System Settings**: Business settings, roles, policies (25 endpoints)
+    - **Email**: Email service integration (14 endpoints)
+    - **Booking**: Seasonal booking management (8 endpoints)
+    - **WordPress**: Instance and domain management (7 endpoints)
+
+    ## Statistics
+    - **Total Endpoints**: 406
+    - **Repositories Scanned**: 12
+    - **Last Updated**: 2025-11-12
+    - **Framework**: Spring Boot (Java)
 
     ## Auto-Update Process
     This document is automatically updated when:
@@ -19,7 +30,7 @@ info:
     - Periodic scans detect new endpoints
     - Manual triggers are executed
 
-  version: 1.0.0
+  version: 2.0.0
   contact:
     name: Hinna Development Team
     url: https://github.com/ABC-Academy-of-Music
@@ -37,13 +48,63 @@ servers:
 
 tags:
   - name: Authentication
-    description: Authentication and authorization endpoints
-  - name: Booking
-    description: Booking management endpoints
-  - name: Email
-    description: Email service endpoints
+    description: User authentication and login (hinna-users-login)
+  - name: PAT - Workflows
+    description: Workflow creation and management (hinna-PAT)
+  - name: PAT - Categories
+    description: Category management (hinna-PAT)
+  - name: PAT - Chat
+    description: PAT chat functionality (hinna-PAT)
+  - name: PAT - Dashboard
+    description: Dashboard and analytics (hinna-PAT)
+  - name: PAT - Favorites
+    description: User favorites management (hinna-PAT)
+  - name: PAT - Library
+    description: Workflow library (hinna-PAT)
+  - name: PAT - Loops
+    description: Loop node management (hinna-PAT)
+  - name: PAT - Testing
+    description: Testing and debugging (hinna-PAT)
+  - name: Payments - Core
+    description: Payment processing (hinna-payments)
+  - name: Payments - Invoices
+    description: Invoice management (hinna-payments)
+  - name: Payments - Methods
+    description: Payment method management (hinna-payments)
+  - name: Payments - Payroll
+    description: Payroll processing (hinna-payments)
+  - name: Payments - Accounts
+    description: Account management (hinna-payments)
+  - name: Payments - Refunds
+    description: Refund processing (hinna-payments)
+  - name: Payments - Settings
+    description: Payment configuration (hinna-payments)
   - name: Chat
-    description: Chat service endpoints
+    description: Chat and messaging (hinna-chat)
+  - name: Chat - Users
+    description: User management for chat (hinna-chat)
+  - name: Chat - Messages
+    description: Message management (hinna-chat)
+  - name: Calendar
+    description: Calendar and scheduling (hinna-calendar)
+  - name: Calendar - Lessons
+    description: Lesson management (hinna-calendar)
+  - name: Calendar - Appointments
+    description: Appointment booking (hinna-calendar)
+  - name: System Settings - Roles
+    description: Role management (hinna-system-settings)
+  - name: System Settings - Banking
+    description: Banking information (hinna-system-settings)
+  - name: System Settings - Policies
+    description: Business policies (hinna-system-settings)
+  - name: System Settings - Waivers
+    description: Waiver management (hinna-system-settings)
+  - name: Email
+    description: Email service (hinna-email-microservice)
+  - name: Booking
+    description: Seasonal booking (hinna-booking-service)
+  - name: WordPress
+    description: WordPress instance management (hinna-wordpress)
   - name: Health
     description: Health check and status endpoints
 
@@ -71,15 +132,19 @@ paths:
                     format: date-time
                   version:
                     type: string
-                    example: 1.0.0
+                    example: 2.0.0
 
-  /api/v1/auth/login:
+  # ==========================================
+  # AUTHENTICATION ENDPOINTS (56)
+  # ==========================================
+
+  /api/auth/token:
     post:
       tags:
         - Authentication
-      summary: User login
+      summary: Generate authentication token
       description: Authenticate user and return JWT token
-      operationId: loginUser
+      operationId: generateToken
       requestBody:
         required: true
         content:
@@ -93,14 +158,12 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: user@example.com
                 password:
                   type: string
                   format: password
-                  example: SecurePass123!
       responses:
         '200':
-          description: Login successful
+          description: Token generated successfully
           content:
             application/json:
               schema:
@@ -108,48 +171,572 @@ paths:
                 properties:
                   token:
                     type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                  user:
-                    $ref: '#/components/schemas/User'
+                  expiresIn:
+                    type: integer
         '401':
-          description: Invalid credentials
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '429':
-          description: Too many login attempts
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/UnauthorizedError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
 
-  /api/v1/bookings:
+  /api/auth/send:
+    post:
+      tags:
+        - Authentication
+      summary: Send verification code
+      description: Send verification code to user's email
+      operationId: sendVerificationCode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Verification code sent
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
+
+  /api/auth/verify:
+    post:
+      tags:
+        - Authentication
+      summary: Verify authentication code
+      description: Verify the authentication code sent to user
+      operationId: verifyCode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - code
+              properties:
+                email:
+                  type: string
+                  format: email
+                code:
+                  type: string
+      responses:
+        '200':
+          description: Code verified successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
+
+  /api/auth/register/checkEmail:
+    post:
+      tags:
+        - Authentication
+      summary: Check email availability
+      description: Check if email is available for registration
+      operationId: checkEmailAvailability
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Email availability status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  available:
+                    type: boolean
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
+
+  /api/auth/register/client:
+    post:
+      tags:
+        - Authentication
+      summary: Register client user
+      description: Register a new client user account
+      operationId: registerClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: Client registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
+
+  /api/auth/register/staff:
+    post:
+      tags:
+        - Authentication
+      summary: Register staff user
+      description: Register a new staff user account
+      operationId: registerStaff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: Staff registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
+
+  /api/auth/register/business:
+    post:
+      tags:
+        - Authentication
+      summary: Register business user
+      description: Register a new business user account
+      operationId: registerBusiness
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: Business registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
+
+  /api/user/me:
     get:
       tags:
-        - Booking
-      summary: List all bookings
-      description: Retrieve a list of all bookings for the authenticated user
-      operationId: listBookings
+        - Authentication
+      summary: Get current user
+      description: Get the currently authenticated user's profile
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/UserController.java
+
+  /api/user/{userID}:
+    get:
+      tags:
+        - Authentication
+      summary: Get user by ID
+      description: Retrieve user information by user ID
+      operationId: getUserById
       security:
         - bearerAuth: []
       parameters:
-        - name: page
-          in: query
-          description: Page number for pagination
+        - name: userID
+          in: path
+          required: true
           schema:
-            type: integer
-            default: 1
-        - name: limit
-          in: query
-          description: Number of items per page
-          schema:
-            type: integer
-            default: 10
-            maximum: 100
+            type: string
+            format: uuid
       responses:
         '200':
-          description: List of bookings
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/UserController.java
+
+    put:
+      tags:
+        - Authentication
+      summary: Update user
+      description: Update user information
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/UserController.java
+
+    delete:
+      tags:
+        - Authentication
+      summary: Delete user
+      description: Delete user account
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/UserController.java
+
+  /api/user/password-reset/send-email:
+    post:
+      tags:
+        - Authentication
+      summary: Send password reset email
+      description: Send password reset link to user's email
+      operationId: sendPasswordResetEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Reset email sent
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/PasswordResetController.java
+
+  /api/user/password-reset/reset:
+    post:
+      tags:
+        - Authentication
+      summary: Reset password
+      description: Reset user password with token
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - newPassword
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Password reset successful
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-users-login
+        file: /src/main/java/com/hinna/userservice/controllers/PasswordResetController.java
+
+  # ==========================================
+  # PAT ENDPOINTS (100)
+  # ==========================================
+
+  /api/categories:
+    get:
+      tags:
+        - PAT - Categories
+      summary: List all categories
+      description: Get all workflow categories
+      operationId: listCategories
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+      x-source:
+        repository: hinna-PAT
+        file: /src/main/java/com/PAT/Pat/Controllers/CategoryController.java
+
+  /api/workflow/user/{id}:
+    get:
+      tags:
+        - PAT - Workflows
+      summary: Get user workflows
+      description: Get all workflows for a specific user
+      operationId: getUserWorkflows
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: User workflows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Workflow'
+      x-source:
+        repository: hinna-PAT
+        file: /src/main/java/com/PAT/Pat/Controllers/WorkflowController.java
+
+  /api/workflow/create:
+    post:
+      tags:
+        - PAT - Workflows
+      summary: Create workflow
+      description: Create a new workflow
+      operationId: createWorkflow
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowCreate'
+      responses:
+        '201':
+          description: Workflow created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-PAT
+        file: /src/main/java/com/PAT/Pat/Controllers/WorkflowController.java
+
+  /api/workflow/execute/{id}:
+    post:
+      tags:
+        - PAT - Workflows
+      summary: Execute workflow
+      description: Execute a workflow by ID
+      operationId: executeWorkflow
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Workflow execution started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  executionId:
+                    type: string
+                  status:
+                    type: string
+      x-source:
+        repository: hinna-PAT
+        file: /src/main/java/com/PAT/Pat/Controllers/WorkflowController.java
+
+  /api/dashboard:
+    get:
+      tags:
+        - PAT - Dashboard
+      summary: Get dashboard data
+      description: Get dashboard statistics and overview
+      operationId: getDashboard
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalWorkflows:
+                    type: integer
+                  activeWorkflows:
+                    type: integer
+                  recentExecutions:
+                    type: integer
+      x-source:
+        repository: hinna-PAT
+        file: /src/main/java/com/PAT/Pat/Controllers/DashboardController.java
+
+  # ==========================================
+  # PAYMENTS ENDPOINTS (122)
+  # ==========================================
+
+  /api/payments/checkout/integrated:
+    post:
+      tags:
+        - Payments - Core
+      summary: Create integrated checkout
+      description: Create an integrated checkout session
+      operationId: createIntegratedCheckout
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+      responses:
+        '201':
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutSession'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-payments
+        file: /payments/src/main/java/org/hinna/payments/controller/api/PaymentController.java
+
+  /api/payments/{id}/process:
+    post:
+      tags:
+        - Payments - Core
+      summary: Process payment
+      description: Process a payment transaction
+      operationId: processPayment
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Payment processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-payments
+        file: /payments/src/main/java/org/hinna/payments/controller/api/PaymentController.java
+
+  /api/invoices:
+    get:
+      tags:
+        - Payments - Invoices
+      summary: List invoices
+      description: Get all invoices
+      operationId: listInvoices
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: List of invoices
           content:
             application/json:
               schema:
@@ -158,22 +745,19 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Booking'
+                      $ref: '#/components/schemas/Invoice'
                   pagination:
                     $ref: '#/components/schemas/Pagination'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+      x-source:
+        repository: hinna-payments
+        file: /payments/src/main/java/org/hinna/payments/controller/api/InvoiceController.java
 
     post:
       tags:
-        - Booking
-      summary: Create a new booking
-      description: Create a new booking for the authenticated user
-      operationId: createBooking
+        - Payments - Invoices
+      summary: Create invoice
+      description: Create a new invoice
+      operationId: createInvoice
       security:
         - bearerAuth: []
       requestBody:
@@ -181,26 +765,587 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookingCreate'
+              $ref: '#/components/schemas/InvoiceCreate'
       responses:
         '201':
-          description: Booking created successfully
+          description: Invoice created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Booking'
+                $ref: '#/components/schemas/Invoice'
         '400':
-          description: Invalid request
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-payments
+        file: /payments/src/main/java/org/hinna/payments/controller/api/InvoiceController.java
+
+  /api/invoices/{id}:
+    get:
+      tags:
+        - Payments - Invoices
+      summary: Get invoice
+      description: Get invoice by ID
+      operationId: getInvoice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Invoice details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+      x-source:
+        repository: hinna-payments
+        file: /payments/src/main/java/org/hinna/payments/controller/api/InvoiceController.java
+
+  /api/payment-methods/owner/{ownerId}:
+    get:
+      tags:
+        - Payments - Methods
+      summary: Get payment methods
+      description: Get all payment methods for owner
+      operationId: getPaymentMethods
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ownerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Payment methods
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentMethod'
+      x-source:
+        repository: hinna-payments
+        file: /payments/src/main/java/org/hinna/payments/controller/api/PaymentMethodController.java
+
+  /settings/payroll/api:
+    post:
+      tags:
+        - Payments - Payroll
+      summary: Create payroll
+      description: Create a new payroll entry
+      operationId: createPayroll
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayrollCreate'
+      responses:
+        '201':
+          description: Payroll created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payroll'
+      x-source:
+        repository: hinna-payments
+        file: /payments/src/main/java/org/hinna/payments/controller/api/PayrollController.java
+
+  # ==========================================
+  # CHAT ENDPOINTS (38)
+  # ==========================================
+
+  /hinnachat/chat/{chatId}:
+    get:
+      tags:
+        - Chat
+      summary: Get chat
+      description: Get chat conversation by ID
+      operationId: getChat
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Chat conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+      x-source:
+        repository: hinna-chat
+        file: /src/main/java/com/hinna/hinnachat/controller/ChatController.java
+
+    post:
+      tags:
+        - Chat
+      summary: Send message
+      description: Send a message in chat
+      operationId: sendMessage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageCreate'
+      responses:
+        '201':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+      x-source:
+        repository: hinna-chat
+        file: /src/main/java/com/hinna/hinnachat/controller/ChatController.java
+
+  /hinnachat/users/{id}:
+    get:
+      tags:
+        - Chat - Users
+      summary: Get chat user
+      description: Get user information for chat
+      operationId: getChatUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatUser'
+      x-source:
+        repository: hinna-chat
+        file: /src/main/java/com/hinna/hinnachat/controller/UserController.java
+
+  # ==========================================
+  # CALENDAR ENDPOINTS (36)
+  # ==========================================
+
+  /api/v1/calendar/day:
+    get:
+      tags:
+        - Calendar
+      summary: Get day view
+      description: Get calendar day view
+      operationId: getCalendarDay
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Day view data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    format: date
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CalendarEvent'
+      x-source:
+        repository: hinna-calendar
+        file: /src/main/java/com/abcacademy/hinna/calendar/web/api/CalendarApi.java
+
+  /api/v1/calendar/week:
+    get:
+      tags:
+        - Calendar
+      summary: Get week view
+      description: Get calendar week view
+      operationId: getCalendarWeek
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Week view data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  startDate:
+                    type: string
+                    format: date
+                  endDate:
+                    type: string
+                    format: date
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CalendarEvent'
+      x-source:
+        repository: hinna-calendar
+        file: /src/main/java/com/abcacademy/hinna/calendar/web/api/CalendarApi.java
+
+  /api/lessons/{lessonId}/reschedule:
+    put:
+      tags:
+        - Calendar - Lessons
+      summary: Reschedule lesson
+      description: Reschedule an existing lesson
+      operationId: rescheduleLesson
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newDateTime
+              properties:
+                newDateTime:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Lesson rescheduled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+      x-source:
+        repository: hinna-calendar
+        file: /src/main/java/com/abcacademy/hinna/calendar/controller/LessonApiController.java
+
+  # ==========================================
+  # EMAIL ENDPOINTS (14)
+  # ==========================================
+
+  /emails:
+    get:
+      tags:
+        - Email
+      summary: List emails
+      description: Get all emails
+      operationId: listEmails
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of emails
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Email'
+      x-source:
+        repository: hinna-email-microservice
+        file: /src/main/java/com/emailservice/demo/DemoApplication.java
+
+    post:
+      tags:
+        - Email
+      summary: Create email
+      description: Create a new email
+      operationId: createEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailCreate'
+      responses:
+        '201':
+          description: Email created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+      x-source:
+        repository: hinna-email-microservice
+        file: /src/main/java/com/emailservice/demo/DemoApplication.java
+
+  /api/emails/send:
+    post:
+      tags:
+        - Email
+      summary: Send email
+      description: Send an email message
+      operationId: sendEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailSend'
+      responses:
+        '200':
+          description: Email sent successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+      x-source:
+        repository: hinna-email-microservice
+        file: /src/main/java/com/emailservice/demo/controller/SendEmailController.java
+
+  # ==========================================
+  # BOOKING ENDPOINTS (8)
+  # ==========================================
+
+  /api/v1/season/get/{id}:
+    get:
+      tags:
+        - Booking
+      summary: Get season
+      description: Get season by ID
+      operationId: getSeason
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Season details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Season'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+      x-source:
+        repository: hinna-booking-service
+        file: /src/main/java/org/Booking/Controller/SeasonController.java
+
+  /booking/service:
+    post:
+      tags:
+        - Booking
+      summary: Create booking service
+      description: Create a new booking service
+      operationId: createBookingService
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingServiceCreate'
+      responses:
+        '201':
+          description: Service created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingService'
+      x-source:
+        repository: hinna-booking-service
+        file: /src/main/java/org/Booking/Controller/ServiceController.java
+
+  # ==========================================
+  # WORDPRESS ENDPOINTS (7)
+  # ==========================================
+
+  /api/user/instance/domain:
+    post:
+      tags:
+        - WordPress
+      summary: Set up domain
+      description: Set up domain validation request
+      operationId: setupDomain
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - domain
+              properties:
+                domain:
+                  type: string
+      responses:
+        '200':
+          description: Domain validation request created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  verificationCode:
+                    type: string
+      x-source:
+        repository: hinna-wordpress
+        file: /src/main/java/com/hinna/wordpress/controllers/InstanceController.java
+
+  /api/user/instance/status:
+    get:
+      tags:
+        - WordPress
+      summary: Check instance status
+      description: Check the status of the WordPress instance
+      operationId: getInstanceStatus
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Instance status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ready, pending, error]
+                  message:
+                    type: string
+      x-source:
+        repository: hinna-wordpress
+        file: /src/main/java/com/hinna/wordpress/controllers/InstanceController.java
+
+  # ==========================================
+  # SYSTEM SETTINGS ENDPOINTS (25)
+  # ==========================================
+
+  /api/settings/roles:
+    get:
+      tags:
+        - System Settings - Roles
+      summary: List roles
+      description: Get all system roles
+      operationId: listRoles
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+      x-source:
+        repository: hinna-system-settings
+        file: /src/main/java/com/service/system_settings/RoleApi.java
+
+    post:
+      tags:
+        - System Settings - Roles
+      summary: Create role
+      description: Create a new system role
+      operationId: createRole
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleCreate'
+      responses:
+        '201':
+          description: Role created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+      x-source:
+        repository: hinna-system-settings
+        file: /src/main/java/com/service/system_settings/RoleApi.java
+
+  /api/settings/business/banking/{id}:
+    get:
+      tags:
+        - System Settings - Banking
+      summary: Get banking info
+      description: Get banking information by ID
+      operationId: getBankingInfo
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Banking information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankingInfo'
+      x-source:
+        repository: hinna-system-settings
+        file: /src/main/java/com/service/system_settings/controller/BankingInformationController.java
 
 components:
   securitySchemes:
@@ -208,7 +1353,27 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: JWT token obtained from /api/v1/auth/login
+      description: JWT token obtained from /api/auth/token
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
 
   schemas:
     User:
@@ -217,35 +1382,348 @@ components:
         id:
           type: string
           format: uuid
-          example: 550e8400-e29b-41d4-a716-446655440000
         email:
           type: string
           format: email
-          example: user@example.com
         firstName:
           type: string
-          example: John
         lastName:
           type: string
-          example: Doe
         role:
           type: string
-          enum: [student, teacher, admin]
-          example: student
+          enum: [client, staff, admin, business]
+        isActive:
+          type: boolean
         createdAt:
           type: string
           format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
-    Booking:
+    UserRegistration:
+      type: object
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+
+    UserUpdate:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+        profilePicture:
+          type: string
+          format: uri
+
+    Category:
       type: object
       properties:
         id:
           type: string
           format: uuid
+        name:
+          type: string
+        description:
+          type: string
         userId:
           type: string
           format: uuid
+
+    Workflow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        userId:
+          type: string
+          format: uuid
+        enabled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    WorkflowCreate:
+      type: object
+      required:
+        - name
+        - userId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        userId:
+          type: string
+          format: uuid
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, completed, failed, cancelled]
+        customerId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+
+    CheckoutRequest:
+      type: object
+      required:
+        - amount
+        - currency
+        - customerId
+      properties:
+        amount:
+          type: number
+          format: double
+        currency:
+          type: string
+        customerId:
+          type: string
+          format: uuid
+        paymentMethodId:
+          type: string
+          format: uuid
+
+    CheckoutSession:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        clientSecret:
+          type: string
+        status:
+          type: string
+
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        invoiceNumber:
+          type: string
+        customerId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        status:
+          type: string
+          enum: [draft, issued, paid, cancelled, overdue]
+        dueDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+
+    InvoiceCreate:
+      type: object
+      required:
+        - customerId
+        - amount
+        - dueDate
+      properties:
+        customerId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        dueDate:
+          type: string
+          format: date
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+
+    InvoiceItem:
+      type: object
+      properties:
+        description:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+          format: double
+
+    PaymentMethod:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        ownerId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [credit_card, debit_card, bank_account]
+        last4:
+          type: string
+        isDefault:
+          type: boolean
+
+    Payroll:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        employeeId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+        paymentDate:
+          type: string
+          format: date
+
+    PayrollCreate:
+      type: object
+      required:
+        - employeeId
+        - amount
+        - paymentDate
+      properties:
+        employeeId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        paymentDate:
+          type: string
+          format: date
+
+    Chat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        participants:
+          type: array
+          items:
+            type: string
+            format: uuid
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        createdAt:
+          type: string
+          format: date-time
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        chatId:
+          type: string
+          format: uuid
+        senderId:
+          type: string
+          format: uuid
+        content:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    MessageCreate:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+
+    ChatUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        isOnline:
+          type: boolean
+
+    CalendarEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        type:
+          type: string
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
         teacherId:
+          type: string
+          format: uuid
+        studentId:
           type: string
           format: uuid
         startTime:
@@ -256,61 +1734,186 @@ components:
           format: date-time
         status:
           type: string
-          enum: [pending, confirmed, cancelled, completed]
-        notes:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
+          enum: [scheduled, completed, cancelled]
 
-    BookingCreate:
+    Email:
       type: object
-      required:
-        - teacherId
-        - startTime
-        - endTime
       properties:
-        teacherId:
+        id:
           type: string
           format: uuid
-        startTime:
+        to:
           type: string
-          format: date-time
-        endTime:
+          format: email
+        subject:
           type: string
-          format: date-time
-        notes:
+        body:
           type: string
-          maxLength: 500
+        status:
+          type: string
+          enum: [draft, sent, failed]
+
+    EmailCreate:
+      type: object
+      required:
+        - to
+        - subject
+        - body
+      properties:
+        to:
+          type: string
+          format: email
+        subject:
+          type: string
+        body:
+          type: string
+
+    EmailSend:
+      type: object
+      required:
+        - to
+        - subject
+        - body
+      properties:
+        to:
+          type: array
+          items:
+            type: string
+            format: email
+        subject:
+          type: string
+        body:
+          type: string
+
+    Season:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+
+    BookingService:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+
+    BookingServiceCreate:
+      type: object
+      required:
+        - name
+        - category
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+
+    RoleCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+
+    BankingInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountNumber:
+          type: string
+        routingNumber:
+          type: string
+        accountType:
+          type: string
 
     Pagination:
       type: object
       properties:
         page:
           type: integer
-          example: 1
         limit:
           type: integer
-          example: 10
         total:
           type: integer
-          example: 100
         totalPages:
           type: integer
-          example: 10
 
     Error:
       type: object
       properties:
         error:
           type: string
-          example: Invalid credentials
         code:
           type: string
-          example: AUTH_001
+        message:
+          type: string
         timestamp:
           type: string
           format: date-time
+
+  responses:
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
