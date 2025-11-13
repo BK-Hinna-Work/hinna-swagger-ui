@@ -29,15 +29,14 @@ info:
     - Any Hinna repository is updated (push/PR merge)
     - Periodic scans detect new endpoints
     - Manual triggers are executed
-
-  version: 2.0.0
+  version: 2.0.1
   contact:
     name: Hinna Development Team
     url: https://github.com/ABC-Academy-of-Music
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-
+  x-lastUpdated: '2025-11-13T01:53:51.162Z'
 servers:
   - url: https://api.hinna.dev
     description: Production server
@@ -45,7 +44,6 @@ servers:
     description: Staging server
   - url: http://localhost:3000
     description: Local development server
-
 tags:
   - name: Authentication
     description: User authentication and login (hinna-users-login)
@@ -107,7 +105,8 @@ tags:
     description: WordPress instance management (hinna-wordpress)
   - name: Health
     description: Health check and status endpoints
-
+  - name: Hinna API Management Swagger
+    description: Endpoints from Hinna-API-Management-Swagger repository
 paths:
   /health:
     get:
@@ -133,11 +132,6 @@ paths:
                   version:
                     type: string
                     example: 2.0.0
-
-  # ==========================================
-  # AUTHENTICATION ENDPOINTS (56)
-  # ==========================================
-
   /api/auth/token:
     post:
       tags:
@@ -178,7 +172,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
-
   /api/auth/send:
     post:
       tags:
@@ -206,7 +199,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
-
   /api/auth/verify:
     post:
       tags:
@@ -237,7 +229,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
-
   /api/auth/register/checkEmail:
     post:
       tags:
@@ -270,7 +261,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
-
   /api/auth/register/client:
     post:
       tags:
@@ -296,7 +286,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
-
   /api/auth/register/staff:
     post:
       tags:
@@ -322,7 +311,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
-
   /api/auth/register/business:
     post:
       tags:
@@ -348,7 +336,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/AuthController.java
-
   /api/user/me:
     get:
       tags:
@@ -370,7 +357,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/UserController.java
-
   /api/user/{userID}:
     get:
       tags:
@@ -399,7 +385,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/UserController.java
-
     put:
       tags:
         - Authentication
@@ -435,7 +420,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/UserController.java
-
     delete:
       tags:
         - Authentication
@@ -459,7 +443,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/UserController.java
-
   /api/user/password-reset/send-email:
     post:
       tags:
@@ -487,7 +470,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/PasswordResetController.java
-
   /api/user/password-reset/reset:
     post:
       tags:
@@ -518,11 +500,6 @@ paths:
       x-source:
         repository: hinna-users-login
         file: /src/main/java/com/hinna/userservice/controllers/PasswordResetController.java
-
-  # ==========================================
-  # PAT ENDPOINTS (100)
-  # ==========================================
-
   /api/categories:
     get:
       tags:
@@ -544,7 +521,6 @@ paths:
       x-source:
         repository: hinna-PAT
         file: /src/main/java/com/PAT/Pat/Controllers/CategoryController.java
-
   /api/workflow/user/{id}:
     get:
       tags:
@@ -573,7 +549,6 @@ paths:
       x-source:
         repository: hinna-PAT
         file: /src/main/java/com/PAT/Pat/Controllers/WorkflowController.java
-
   /api/workflow/create:
     post:
       tags:
@@ -601,7 +576,6 @@ paths:
       x-source:
         repository: hinna-PAT
         file: /src/main/java/com/PAT/Pat/Controllers/WorkflowController.java
-
   /api/workflow/execute/{id}:
     post:
       tags:
@@ -633,7 +607,6 @@ paths:
       x-source:
         repository: hinna-PAT
         file: /src/main/java/com/PAT/Pat/Controllers/WorkflowController.java
-
   /api/dashboard:
     get:
       tags:
@@ -660,11 +633,6 @@ paths:
       x-source:
         repository: hinna-PAT
         file: /src/main/java/com/PAT/Pat/Controllers/DashboardController.java
-
-  # ==========================================
-  # PAYMENTS ENDPOINTS (122)
-  # ==========================================
-
   /api/payments/checkout/integrated:
     post:
       tags:
@@ -692,7 +660,6 @@ paths:
       x-source:
         repository: hinna-payments
         file: /payments/src/main/java/org/hinna/payments/controller/api/PaymentController.java
-
   /api/payments/{id}/process:
     post:
       tags:
@@ -721,7 +688,6 @@ paths:
       x-source:
         repository: hinna-payments
         file: /payments/src/main/java/org/hinna/payments/controller/api/PaymentController.java
-
   /api/invoices:
     get:
       tags:
@@ -751,7 +717,6 @@ paths:
       x-source:
         repository: hinna-payments
         file: /payments/src/main/java/org/hinna/payments/controller/api/InvoiceController.java
-
     post:
       tags:
         - Payments - Invoices
@@ -778,7 +743,6 @@ paths:
       x-source:
         repository: hinna-payments
         file: /payments/src/main/java/org/hinna/payments/controller/api/InvoiceController.java
-
   /api/invoices/{id}:
     get:
       tags:
@@ -807,7 +771,6 @@ paths:
       x-source:
         repository: hinna-payments
         file: /payments/src/main/java/org/hinna/payments/controller/api/InvoiceController.java
-
   /api/payment-methods/owner/{ownerId}:
     get:
       tags:
@@ -836,7 +799,6 @@ paths:
       x-source:
         repository: hinna-payments
         file: /payments/src/main/java/org/hinna/payments/controller/api/PaymentMethodController.java
-
   /settings/payroll/api:
     post:
       tags:
@@ -862,11 +824,6 @@ paths:
       x-source:
         repository: hinna-payments
         file: /payments/src/main/java/org/hinna/payments/controller/api/PayrollController.java
-
-  # ==========================================
-  # CHAT ENDPOINTS (38)
-  # ==========================================
-
   /hinnachat/chat/{chatId}:
     get:
       tags:
@@ -895,7 +852,6 @@ paths:
       x-source:
         repository: hinna-chat
         file: /src/main/java/com/hinna/hinnachat/controller/ChatController.java
-
     post:
       tags:
         - Chat
@@ -927,7 +883,6 @@ paths:
       x-source:
         repository: hinna-chat
         file: /src/main/java/com/hinna/hinnachat/controller/ChatController.java
-
   /hinnachat/users/{id}:
     get:
       tags:
@@ -954,11 +909,6 @@ paths:
       x-source:
         repository: hinna-chat
         file: /src/main/java/com/hinna/hinnachat/controller/UserController.java
-
-  # ==========================================
-  # CALENDAR ENDPOINTS (36)
-  # ==========================================
-
   /api/v1/calendar/day:
     get:
       tags:
@@ -993,7 +943,6 @@ paths:
       x-source:
         repository: hinna-calendar
         file: /src/main/java/com/abcacademy/hinna/calendar/web/api/CalendarApi.java
-
   /api/v1/calendar/week:
     get:
       tags:
@@ -1031,7 +980,6 @@ paths:
       x-source:
         repository: hinna-calendar
         file: /src/main/java/com/abcacademy/hinna/calendar/web/api/CalendarApi.java
-
   /api/lessons/{lessonId}/reschedule:
     put:
       tags:
@@ -1070,11 +1018,6 @@ paths:
       x-source:
         repository: hinna-calendar
         file: /src/main/java/com/abcacademy/hinna/calendar/controller/LessonApiController.java
-
-  # ==========================================
-  # EMAIL ENDPOINTS (14)
-  # ==========================================
-
   /emails:
     get:
       tags:
@@ -1096,7 +1039,6 @@ paths:
       x-source:
         repository: hinna-email-microservice
         file: /src/main/java/com/emailservice/demo/DemoApplication.java
-
     post:
       tags:
         - Email
@@ -1121,7 +1063,6 @@ paths:
       x-source:
         repository: hinna-email-microservice
         file: /src/main/java/com/emailservice/demo/DemoApplication.java
-
   /api/emails/send:
     post:
       tags:
@@ -1145,11 +1086,6 @@ paths:
       x-source:
         repository: hinna-email-microservice
         file: /src/main/java/com/emailservice/demo/controller/SendEmailController.java
-
-  # ==========================================
-  # BOOKING ENDPOINTS (8)
-  # ==========================================
-
   /api/v1/season/get/{id}:
     get:
       tags:
@@ -1178,7 +1114,6 @@ paths:
       x-source:
         repository: hinna-booking-service
         file: /src/main/java/org/Booking/Controller/SeasonController.java
-
   /booking/service:
     post:
       tags:
@@ -1204,11 +1139,6 @@ paths:
       x-source:
         repository: hinna-booking-service
         file: /src/main/java/org/Booking/Controller/ServiceController.java
-
-  # ==========================================
-  # WORDPRESS ENDPOINTS (7)
-  # ==========================================
-
   /api/user/instance/domain:
     post:
       tags:
@@ -1242,7 +1172,6 @@ paths:
       x-source:
         repository: hinna-wordpress
         file: /src/main/java/com/hinna/wordpress/controllers/InstanceController.java
-
   /api/user/instance/status:
     get:
       tags:
@@ -1262,17 +1191,15 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: [ready, pending, error]
+                    enum:
+                      - ready
+                      - pending
+                      - error
                   message:
                     type: string
       x-source:
         repository: hinna-wordpress
         file: /src/main/java/com/hinna/wordpress/controllers/InstanceController.java
-
-  # ==========================================
-  # SYSTEM SETTINGS ENDPOINTS (25)
-  # ==========================================
-
   /api/settings/roles:
     get:
       tags:
@@ -1294,7 +1221,6 @@ paths:
       x-source:
         repository: hinna-system-settings
         file: /src/main/java/com/service/system_settings/RoleApi.java
-
     post:
       tags:
         - System Settings - Roles
@@ -1319,7 +1245,6 @@ paths:
       x-source:
         repository: hinna-system-settings
         file: /src/main/java/com/service/system_settings/RoleApi.java
-
   /api/settings/business/banking/{id}:
     get:
       tags:
@@ -1346,7 +1271,6 @@ paths:
       x-source:
         repository: hinna-system-settings
         file: /src/main/java/com/service/system_settings/controller/BankingInformationController.java
-
 components:
   securitySchemes:
     bearerAuth:
@@ -1354,7 +1278,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: JWT token obtained from /api/auth/token
-
   parameters:
     PageParam:
       name: page
@@ -1364,7 +1287,6 @@ components:
         type: integer
         default: 1
         minimum: 1
-
     LimitParam:
       name: limit
       in: query
@@ -1374,7 +1296,6 @@ components:
         default: 10
         minimum: 1
         maximum: 100
-
   schemas:
     User:
       type: object
@@ -1391,7 +1312,11 @@ components:
           type: string
         role:
           type: string
-          enum: [client, staff, admin, business]
+          enum:
+            - client
+            - staff
+            - admin
+            - business
         isActive:
           type: boolean
         createdAt:
@@ -1400,7 +1325,6 @@ components:
         updatedAt:
           type: string
           format: date-time
-
     UserRegistration:
       type: object
       required:
@@ -1421,7 +1345,6 @@ components:
           type: string
         phoneNumber:
           type: string
-
     UserUpdate:
       type: object
       properties:
@@ -1434,7 +1357,6 @@ components:
         profilePicture:
           type: string
           format: uri
-
     Category:
       type: object
       properties:
@@ -1448,7 +1370,6 @@ components:
         userId:
           type: string
           format: uuid
-
     Workflow:
       type: object
       properties:
@@ -1467,7 +1388,6 @@ components:
         createdAt:
           type: string
           format: date-time
-
     WorkflowCreate:
       type: object
       required:
@@ -1481,7 +1401,6 @@ components:
         userId:
           type: string
           format: uuid
-
     Payment:
       type: object
       properties:
@@ -1495,14 +1414,18 @@ components:
           type: string
         status:
           type: string
-          enum: [pending, processing, completed, failed, cancelled]
+          enum:
+            - pending
+            - processing
+            - completed
+            - failed
+            - cancelled
         customerId:
           type: string
           format: uuid
         createdAt:
           type: string
           format: date-time
-
     CheckoutRequest:
       type: object
       required:
@@ -1521,7 +1444,6 @@ components:
         paymentMethodId:
           type: string
           format: uuid
-
     CheckoutSession:
       type: object
       properties:
@@ -1531,7 +1453,6 @@ components:
           type: string
         status:
           type: string
-
     Invoice:
       type: object
       properties:
@@ -1548,14 +1469,18 @@ components:
           format: double
         status:
           type: string
-          enum: [draft, issued, paid, cancelled, overdue]
+          enum:
+            - draft
+            - issued
+            - paid
+            - cancelled
+            - overdue
         dueDate:
           type: string
           format: date
         createdAt:
           type: string
           format: date-time
-
     InvoiceCreate:
       type: object
       required:
@@ -1576,7 +1501,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InvoiceItem'
-
     InvoiceItem:
       type: object
       properties:
@@ -1587,7 +1511,6 @@ components:
         unitPrice:
           type: number
           format: double
-
     PaymentMethod:
       type: object
       properties:
@@ -1599,12 +1522,14 @@ components:
           format: uuid
         type:
           type: string
-          enum: [credit_card, debit_card, bank_account]
+          enum:
+            - credit_card
+            - debit_card
+            - bank_account
         last4:
           type: string
         isDefault:
           type: boolean
-
     Payroll:
       type: object
       properties:
@@ -1619,11 +1544,14 @@ components:
           format: double
         status:
           type: string
-          enum: [pending, processing, completed, failed]
+          enum:
+            - pending
+            - processing
+            - completed
+            - failed
         paymentDate:
           type: string
           format: date
-
     PayrollCreate:
       type: object
       required:
@@ -1640,7 +1568,6 @@ components:
         paymentDate:
           type: string
           format: date
-
     Chat:
       type: object
       properties:
@@ -1659,7 +1586,6 @@ components:
         createdAt:
           type: string
           format: date-time
-
     Message:
       type: object
       properties:
@@ -1677,7 +1603,6 @@ components:
         timestamp:
           type: string
           format: date-time
-
     MessageCreate:
       type: object
       required:
@@ -1685,7 +1610,6 @@ components:
       properties:
         content:
           type: string
-
     ChatUser:
       type: object
       properties:
@@ -1696,7 +1620,6 @@ components:
           type: string
         isOnline:
           type: boolean
-
     CalendarEvent:
       type: object
       properties:
@@ -1713,7 +1636,6 @@ components:
           format: date-time
         type:
           type: string
-
     Lesson:
       type: object
       properties:
@@ -1734,8 +1656,10 @@ components:
           format: date-time
         status:
           type: string
-          enum: [scheduled, completed, cancelled]
-
+          enum:
+            - scheduled
+            - completed
+            - cancelled
     Email:
       type: object
       properties:
@@ -1751,8 +1675,10 @@ components:
           type: string
         status:
           type: string
-          enum: [draft, sent, failed]
-
+          enum:
+            - draft
+            - sent
+            - failed
     EmailCreate:
       type: object
       required:
@@ -1767,7 +1693,6 @@ components:
           type: string
         body:
           type: string
-
     EmailSend:
       type: object
       required:
@@ -1784,7 +1709,6 @@ components:
           type: string
         body:
           type: string
-
     Season:
       type: object
       properties:
@@ -1799,7 +1723,6 @@ components:
         endDate:
           type: string
           format: date
-
     BookingService:
       type: object
       properties:
@@ -1812,7 +1735,6 @@ components:
           type: string
         category:
           type: string
-
     BookingServiceCreate:
       type: object
       required:
@@ -1825,7 +1747,6 @@ components:
           type: string
         category:
           type: string
-
     Role:
       type: object
       properties:
@@ -1838,7 +1759,6 @@ components:
           type: array
           items:
             type: string
-
     RoleCreate:
       type: object
       required:
@@ -1850,7 +1770,6 @@ components:
           type: array
           items:
             type: string
-
     BankingInfo:
       type: object
       properties:
@@ -1863,7 +1782,6 @@ components:
           type: string
         accountType:
           type: string
-
     Pagination:
       type: object
       properties:
@@ -1875,7 +1793,6 @@ components:
           type: integer
         totalPages:
           type: integer
-
     Error:
       type: object
       properties:
@@ -1888,7 +1805,6 @@ components:
         timestamp:
           type: string
           format: date-time
-
   responses:
     BadRequestError:
       description: Bad request
@@ -1896,21 +1812,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-
     UnauthorizedError:
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-
     NotFoundError:
       description: Resource not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-
     InternalServerError:
       description: Internal server error
       content:
