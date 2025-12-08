@@ -1,0 +1,116 @@
+[
+  {
+    "name": "hinna-main-interface",
+    "port": 8080,
+    "url": "http://localhost:8080/v3/api-docs",
+    "description": "Entry Point Aggregator - Proxies all services"
+  },
+  {
+    "name": "hinna-users-login",
+    "port": 8081,
+    "url": "http://localhost:8081/v3/api-docs",
+    "description": "Authentication & Users"
+  },
+  {
+    "name": "hinna-payments",
+    "port": 8082,
+    "url": "http://localhost:8082/v3/api-docs",
+    "description": "Payment Processing"
+  },
+  {
+    "name": "hinna-booking-service",
+    "port": 8083,
+    "url": "http://localhost:8083/v3/api-docs",
+    "description": "Core Booking Logic"
+  },
+  {
+    "name": "hinna-chat",
+    "port": 8084,
+    "url": "http://localhost:8084/v3/api-docs",
+    "description": "Real-time Chat"
+  },
+  {
+    "name": "hinna-calendar",
+    "port": 8085,
+    "url": "http://localhost:8085/v3/api-docs",
+    "description": "Scheduling/Calendar"
+  },
+  {
+    "name": "hinna-realtime",
+    "port": 8086,
+    "url": "http://localhost:8086/v3/api-docs",
+    "description": "WebSocket/SSE"
+  },
+  {
+    "name": "hinna-email-microservice",
+    "port": 8087,
+    "url": "http://localhost:8087/v3/api-docs",
+    "description": "Email Notifications"
+  },
+  {
+    "name": "hinna-wordpress",
+    "port": 8088,
+    "url": "http://localhost:8088/v3/api-docs",
+    "description": "WordPress Integration"
+  },
+  {
+    "name": "hinna-reporting",
+    "port": 8089,
+    "url": "http://localhost:8089/v3/api-docs",
+    "description": "Analytics & Reports"
+  },
+  {
+    "name": "hinna-PAT",
+    "port": 8090,
+    "url": "http://localhost:8090/v3/api-docs",
+    "description": "Personal Access Tokens"
+  },
+  {
+    "name": "hinna-system-settings",
+    "port": 8091,
+    "url": "http://localhost:8091/v3/api-docs",
+    "description": "Configuration"
+  },
+  {
+    "name": "hinna-ai",
+    "port": 8092,
+    "url": "http://localhost:8092/v3/api-docs",
+    "description": "AI Features"
+  },
+  {
+    "name": "hinna-paid-campaigns",
+    "port": 8093,
+    "url": "http://localhost:8093/v3/api-docs",
+    "description": "Marketing Campaigns"
+  },
+  {
+    "name": "hinna-account-settings",
+    "port": 8094,
+    "url": "http://localhost:8094/v3/api-docs",
+    "description": "Account Management"
+  },
+  {
+    "name": "hinna-locations",
+    "port": 8095,
+    "url": "http://localhost:8095/v3/api-docs",
+    "description": "Location Management"
+  },
+  {
+    "name": "hinna-external-connections",
+    "port": 8096,
+    "url": "http://localhost:8096/v3/api-docs",
+    "description": "Third-party Integrations"
+  },
+  {
+    "name": "hinna-web-app",
+    "port": 3001,
+    "url": "http://localhost:3001/api-docs",
+    "description": "Main Web Application"
+  },
+  {
+    "name": "hinna-service-builder",
+    "port": 3000,
+    "url": "http://localhost:3000/api-docs",
+    "description": "Service Generator"
+  }
+]

@@ -4,6 +4,7 @@
   "description": "Centralized API documentation for Hinna microservices",
   "main": "index.js",
   "scripts": {
+    "fetch-local": "node scripts/fetch-local-specs.js",
     "scan": "node scripts/scan-repository.js",
     "update": "node scripts/update-swagger.js",
     "list-repos": "node scripts/list-hinna-repos.js",
@@ -14,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ABC-Academy-of-Music/Hinna-API-Management-Swagger.git"
+    "url": "git+https://github.com/BK-Hinna-Work/Hinna-API-Management-Swagger.git"
   },
   "keywords": [
     "swagger",
@@ -25,9 +26,9 @@
   "author": "ABC Academy of Music",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ABC-Academy-of-Music/Hinna-API-Management-Swagger/issues"
+    "url": "https://github.com/BK-Hinna-Work/Hinna-API-Management-Swagger/issues"
   },
-  "homepage": "https://github.com/ABC-Academy-of-Music/Hinna-API-Management-Swagger#readme",
+  "homepage": "https://github.com/BK-Hinna-Work/Hinna-API-Management-Swagger#readme",
   "devDependencies": {
     "@apidevtools/swagger-cli": "^4.0.4"
   },
