@@ -38,3 +38,6 @@ docs/*-scan.json
 # OS
 Thumbs.db
 .DS_Store
+
+# Claude Code session tracking (local context only)
+CLAUDE.md
