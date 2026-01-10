@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui:v5.10.3
+    container_name: hinna-swagger-ui
+    ports:
+      - "8099:8080"
+    environment:
+      - SWAGGER_JSON=/specs/swagger.yaml
+      - BASE_URL=/
+      - DOC_EXPANSION=list
+      - FILTER=true
+      - TRY_IT_OUT_ENABLED=true
+      - DISPLAY_REQUEST_DURATION=true
+      - SYNTAX_HIGHLIGHT_ACTIVATE=true
+      - SYNTAX_HIGHLIGHT_THEME=monokai
+    volumes:
+      - ./public:/specs:ro
+    networks:
+      - hinna-network
+    restart: unless-stopped
+    labels:
+      - "com.hinna.service=swagger-ui"
+      - "com.hinna.description=API Documentation Portal"
+
+  # Alternative: Custom static server with aggregation support
+  swagger-aggregator:
+    image: node:20-alpine
+    container_name: hinna-swagger-aggregator
+    working_dir: /app
+    ports:
+      - "8098:8099"
+    volumes:
+      - ./:/app:ro
+      - ./public:/app/public
+    command: sh -c "npm install && npm run serve"
+    networks:
+      - hinna-network
+    profiles:
+      - aggregator
+    restart: unless-stopped
+
+networks:
+  hinna-network:
+    external: true
+    name: hinna-platform_default

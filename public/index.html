@@ -23,38 +23,189 @@
         body {
             margin: 0;
             padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         .topbar {
-            background-color: #2c3e50;
-            padding: 15px 0;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        .topbar-wrapper {
-            max-width: 1460px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .topbar-wrapper a {
-            color: #ecf0f1;
+        .topbar-brand a {
+            color: #fff;
             text-decoration: none;
-            font-size: 1.5em;
-            font-weight: bold;
+            font-size: 1.4em;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .topbar-brand .version {
+            background: rgba(255,255,255,0.2);
+            color: #e2e8f0;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 500;
+        }
+
+        .service-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-selector label {
+            color: #e2e8f0;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .service-selector select {
+            padding: 8px 35px 8px 12px;
+            font-size: 0.95em;
+            border: none;
+            border-radius: 6px;
+            background: #fff;
+            color: #1a365d;
+            cursor: pointer;
+            min-width: 220px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a365d' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .service-selector select:hover {
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .service-selector select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e2e8f0;
+            font-size: 0.85em;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #48bb78;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: #fc8181;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .swagger-ui .topbar {
             display: none;
+        }
+
+        .swagger-ui .info {
+            margin: 20px 0;
+        }
+
+        .refresh-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .refresh-btn svg {
+            width: 14px;
+            height: 14px;
         }
     </style>
 </head>
 
 <body>
     <div class="topbar">
-        <div class="topbar-wrapper">
-            <a href="/">
-                <span>Hinna API Management</span>
-            </a>
+        <div class="topbar-brand">
+            <a href="/">Hinna API Management</a>
+            <span class="version">v1.0.0</span>
+        </div>
+
+        <div class="service-selector">
+            <label for="service-select">Service:</label>
+            <select id="service-select">
+                <option value="./swagger.yaml">All Services (Merged)</option>
+                <optgroup label="Core Services">
+                    <option value="http://localhost:8080/v3/api-docs">main-interface (8080)</option>
+                    <option value="http://localhost:8081/v3/api-docs">users-login (8081)</option>
+                    <option value="http://localhost:8082/v3/api-docs">payments (8082)</option>
+                    <option value="http://localhost:8083/v3/api-docs">booking-service (8083)</option>
+                </optgroup>
+                <optgroup label="Communication">
+                    <option value="http://localhost:8084/v3/api-docs">chat (8084)</option>
+                    <option value="http://localhost:8085/v3/api-docs">calendar (8085)</option>
+                    <option value="http://localhost:8086/v3/api-docs">realtime (8086)</option>
+                    <option value="http://localhost:8087/v3/api-docs">email-microservice (8087)</option>
+                </optgroup>
+                <optgroup label="Business Services">
+                    <option value="http://localhost:8088/v3/api-docs">wordpress (8088)</option>
+                    <option value="http://localhost:8089/v3/api-docs">reporting (8089)</option>
+                    <option value="http://localhost:8090/v3/api-docs">PAT (8090)</option>
+                    <option value="http://localhost:8091/v3/api-docs">system-settings (8091)</option>
+                    <option value="http://localhost:8092/v3/api-docs">ai (8092)</option>
+                    <option value="http://localhost:8093/v3/api-docs">paid-campaigns (8093)</option>
+                    <option value="http://localhost:8094/v3/api-docs">account-settings (8094)</option>
+                    <option value="http://localhost:8095/v3/api-docs">locations (8095)</option>
+                    <option value="http://localhost:8096/v3/api-docs">external-connections (8096)</option>
+                </optgroup>
+                <optgroup label="Frontend">
+                    <option value="http://localhost:3001/api-docs">web-app (3001)</option>
+                    <option value="http://localhost:3000/api-docs">service-builder (3000)</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="status-indicator">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Ready</span>
+            <button class="refresh-btn" onclick="refreshSpecs()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refresh
+            </button>
         </div>
     </div>
 
@@ -63,10 +214,17 @@
     <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-bundle.js" crossorigin></script>
     <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js" crossorigin></script>
     <script>
-        window.onload = function() {
-            // Begin Swagger UI call region
-            const ui = SwaggerUIBundle({
-                url: "./swagger.yaml",
+        let ui;
+
+        function initSwaggerUI(url) {
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+
+            statusDot.classList.remove('offline');
+            statusText.textContent = 'Loading...';
+
+            ui = SwaggerUIBundle({
+                url: url,
                 dom_id: '#swagger-ui',
                 deepLinking: true,
                 presets: [
@@ -83,11 +241,59 @@
                 syntaxHighlight: {
                     activate: true,
                     theme: "monokai"
+                },
+                onComplete: function() {
+                    statusDot.classList.remove('offline');
+                    statusText.textContent = 'Ready';
+                },
+                onFailure: function(error) {
+                    statusDot.classList.add('offline');
+                    statusText.textContent = 'Service unavailable';
+                    console.error('Swagger UI error:', error);
                 }
             });
-            // End Swagger UI call region
 
             window.ui = ui;
+        }
+
+        function refreshSpecs() {
+            const select = document.getElementById('service-select');
+            initSwaggerUI(select.value);
+        }
+
+        window.onload = function() {
+            const select = document.getElementById('service-select');
+
+            // Check URL params for service selection
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceParam = urlParams.get('service');
+            if (serviceParam) {
+                const options = select.querySelectorAll('option');
+                for (const option of options) {
+                    if (option.value.includes(serviceParam)) {
+                        select.value = option.value;
+                        break;
+                    }
+                }
+            }
+
+            // Initialize with selected service
+            initSwaggerUI(select.value);
+
+            // Handle service selection changes
+            select.addEventListener('change', function() {
+                initSwaggerUI(this.value);
+
+                // Update URL without reload
+                const url = new URL(window.location);
+                if (this.value === './swagger.yaml') {
+                    url.searchParams.delete('service');
+                } else {
+                    const serviceName = this.options[this.selectedIndex].text.split(' ')[0];
+                    url.searchParams.set('service', serviceName);
+                }
+                window.history.pushState({}, '', url);
+            });
         };
     </script>
 </body>

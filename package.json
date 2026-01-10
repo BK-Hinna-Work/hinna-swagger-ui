@@ -10,7 +10,7 @@
     "list-repos": "node scripts/list-hinna-repos.js",
     "scan-all": "node scripts/scan-all-repositories.js",
     "validate": "swagger-cli validate public/swagger.yaml",
-    "serve": "npx http-server public -p 8080",
+    "serve": "npx http-server public -p 8099 --cors",
     "test": "npm run validate"
   },
   "repository": {
