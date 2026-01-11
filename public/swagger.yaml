@@ -29,14 +29,14 @@ info:
     - Any Hinna repository is updated (push/PR merge)
     - Periodic scans detect new endpoints
     - Manual triggers are executed
-  version: 2.0.104
+  version: 2.0.105
   contact:
     name: Hinna Development Team
     url: https://github.com/ABC-Academy-of-Music
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  x-lastUpdated: '2025-12-08T18:37:32.609Z'
+  x-lastUpdated: '2026-01-11T01:06:38.887Z'
 servers:
   - url: https://api.hinna.dev
     description: Production server
@@ -107,6 +107,8 @@ tags:
     description: Health check and status endpoints
   - name: Hinna API Management Swagger
     description: Endpoints from Hinna-API-Management-Swagger repository
+  - name: Hinna Swagger Ui
+    description: Endpoints from hinna-swagger-ui repository
 paths:
   /health:
     get:
