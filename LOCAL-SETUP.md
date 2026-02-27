@@ -11,7 +11,7 @@
 ### 1. Install Dependencies
 
 ```bash
-cd /Users/barnabykerekes/Desktop/BK-Hinna-Work/hinna-swagger-ui
+cd /Users/barnabykerekes/Hinna/hinna-swagger-ui
 npm install
 ```
 
@@ -268,7 +268,7 @@ This is intentional - it's for local development only.
 4. ⏳ Test fetch-local with all running services
 5. ⏳ Verify aggregated documentation in Swagger UI
 
-See: `/Users/barnabykerekes/Desktop/BK-Hinna-Work/docs/SWAGGER-ROLLOUT-PLAN.md`
+See: `/Users/barnabykerekes/Hinna/docs/SWAGGER-ROLLOUT-PLAN.md`
 
 ---
 

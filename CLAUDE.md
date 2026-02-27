@@ -24,7 +24,7 @@
 
 ### 2025-12-08 16:58
 - Session completed
-- Working in: /Users/barnabykerekes/Desktop/BK-Hinna-Work/hinna-swagger-ui
+- Working in: /Users/barnabykerekes/Hinna/hinna-swagger-ui
 - Git branch: main
 
 ---
