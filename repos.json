@@ -18,12 +18,6 @@
     "description": "Payment Processing"
   },
   {
-    "name": "hinna-booking-service",
-    "port": 8083,
-    "url": "http://localhost:8083/v3/api-docs",
-    "description": "Core Booking Logic"
-  },
-  {
     "name": "hinna-chat",
     "port": 8084,
     "url": "http://localhost:8084/v3/api-docs",
@@ -112,5 +106,11 @@
     "port": 3000,
     "url": "http://localhost:3000/api-docs",
     "description": "Service Generator"
+  },
+  {
+    "name": "hinna-registrations",
+    "port": 8140,
+    "url": "http://localhost:8140/v3/api-docs",
+    "description": "Registration Pages & Widgets"
   }
 ]
