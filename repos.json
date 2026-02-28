@@ -96,6 +96,12 @@
     "description": "Third-party Integrations"
   },
   {
+    "name": "hinna-import-export",
+    "port": 8097,
+    "url": "http://localhost:8097/v3/api-docs",
+    "description": "Data Import/Export"
+  },
+  {
     "name": "hinna-web-app",
     "port": 3001,
     "url": "http://localhost:3001/api-docs",
@@ -103,8 +109,8 @@
   },
   {
     "name": "hinna-service-builder",
-    "port": 3000,
-    "url": "http://localhost:3000/api-docs",
+    "port": 8083,
+    "url": "http://localhost:8083/api-docs",
     "description": "Service Generator"
   },
   {
