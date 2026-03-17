@@ -118,5 +118,11 @@
     "port": 8140,
     "url": "http://localhost:8140/v3/api-docs",
     "description": "Registration Pages & Widgets"
+  },
+  {
+    "name": "hinna-paid-marketing",
+    "port": 8098,
+    "url": "http://localhost:8098/v3/api-docs",
+    "description": "Paid Marketing Campaigns"
   }
 ]
