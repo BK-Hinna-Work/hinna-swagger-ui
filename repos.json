@@ -102,7 +102,7 @@
     "description": "Data Import/Export"
   },
   {
-    "name": "hinna-web-app",
+    "name": "hinna-PWA",
     "port": 3001,
     "url": "http://localhost:3001/api-docs",
     "description": "Main Web Application"
