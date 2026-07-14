@@ -1,8 +1,6 @@
-# hinna-swagger-ui
+# hinna-swagger-ui — Claude context
 
-Aggregated Swagger UI for the Hinna platform. Proxies API docs from all running services into a single browsable interface.
-
-## Run
-```bash
-npm install && npm start
-```
+- **Read first:** ~/wiki/hinna/INDEX.md (+ relevant `~/wiki/hinna/cross-cutting/` page). Wiki is the maintained source; this file is deliberately thin.
+- **Version:** `build.gradle` is the ONLY source of truth — never trust a version number in any doc.
+- **Open items:** `~/Hinna/QUEUE.md` + the wiki page — never trust a static "no open items" claim.
+- **Hard constraints:** injected per-turn by Hinna hooks (`~/.claude/skills/hinna-patterns/constraints-only.md`).
