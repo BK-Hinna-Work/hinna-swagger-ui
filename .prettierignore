@@ -1,0 +1,5 @@
+node_modules/
+public/swagger.yaml
+public/index.html
+package-lock.json
+CHANGELOG.md

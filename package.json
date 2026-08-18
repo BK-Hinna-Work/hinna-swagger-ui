@@ -11,7 +11,12 @@
     "scan-all": "node scripts/scan-all-repositories.js",
     "validate": "swagger-cli validate public/swagger.yaml",
     "serve": "npx http-server public -p 8099 --cors",
-    "test": "npm run validate"
+    "test": "npm run validate",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "deps:check": "ncu"
   },
   "repository": {
     "type": "git",
@@ -30,7 +35,13 @@
   },
   "homepage": "https://github.com/BK-Hinna-Work/Hinna-API-Management-Swagger#readme",
   "devDependencies": {
-    "@apidevtools/swagger-cli": "^4.0.4"
+    "@apidevtools/swagger-cli": "^4.0.4",
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.11.0",
+    "npm-check-updates": "^22.2.9",
+    "prettier": "^3.9.6"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.2",
