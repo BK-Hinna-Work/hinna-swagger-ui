@@ -353,6 +353,47 @@ env:
 - The swagger.yaml is public (adjust as needed)
 - Audit endpoint discovery to ensure no sensitive info is exposed
 
+## ✅ Code quality policy
+
+This repo is a plain Node.js/CommonJS script collection (`scripts/*.js`), and
+until now had no lint, format, or dependency policy actually wired up —
+`docs/CONTRIBUTING.md` referenced "linting passes" as a PR checklist item
+with nothing behind it. This section is what backs that checklist item now.
+
+**What's enforced**, over `scripts/**/*.js` (deliberately excludes
+`public/`, which holds the served OpenAPI spec and static viewer, not
+authored code):
+
+- **Lint** — [ESLint](https://eslint.org/) (`eslint.config.js`), catches
+  real bugs like unused variables and undefined globals.
+- **Format** — [Prettier](https://prettier.io/) (`.prettierrc.json`),
+  single quotes / semicolons / 100-col width, checked but never
+  auto-applied by CI.
+- **Dependencies** — every entry in `package.json`'s `dependencies` and
+  `devDependencies` must be a real pinned range, not a floating `*` or
+  `latest`. There's no committed lockfile (`package-lock.json` is
+  gitignored), so an unpinned dependency is the whole difference between a
+  reproducible install and one that pulls in whatever shipped an hour ago.
+
+**Run it:**
+
+```bash
+npm install
+npm run check
+```
+
+`npm run check` runs all three and exits non-zero if any of them find a
+real violation. It also refuses to report success if a check ever matches
+zero files — a check that covers nothing is a false pass, not a clean
+bill of health. `npm run lint` and `npm run format:check` run the
+lint/format checks individually.
+
+This policy was added without reformatting any existing file. As of this
+change, `npm run check` reports 7 pre-existing lint errors (unused
+variables) and 7 files not matching the Prettier style in `scripts/` —
+those are pre-existing, not introduced here, and are left for a separate
+cleanup pass rather than bundled into this config change.
+
 ## 📚 Additional Resources
 
 - [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)

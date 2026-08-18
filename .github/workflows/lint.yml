@@ -1,0 +1,34 @@
+name: Code Quality
+
+# L3-03: no CI workflow in this repo previously ran the lint/format/dependency
+# policy in `npm run check` (README "Code quality policy" section) — this is
+# what makes that policy actually enforced instead of just documented.
+# Triggers match the repo's real default branch (main).
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run lint / format / dependency policy check
+        run: npm run check
