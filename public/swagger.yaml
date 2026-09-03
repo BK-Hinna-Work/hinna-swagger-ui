@@ -29,14 +29,14 @@ info:
     - Any Hinna repository is updated (push/PR merge)
     - Periodic scans detect new endpoints
     - Manual triggers are executed
-  version: 2.0.1041
+  version: 2.0.1042
   contact:
     name: Hinna Development Team
     url: https://github.com/ABC-Academy-of-Music
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  x-lastUpdated: '2026-09-03T10:22:19.385Z'
+  x-lastUpdated: '2026-09-03T15:28:07.106Z'
 servers:
   - url: https://api.hinna.dev
     description: Production server
