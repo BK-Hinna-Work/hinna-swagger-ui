@@ -102,7 +102,7 @@ tags:
   - name: Booking
     description: Seasonal booking (hinna-booking-service)
   - name: WordPress
-    description: WordPress instance management (hinna-wordpress)
+    description: WordPress instance management (hinna-websites)
   - name: Health
     description: Health check and status endpoints
   - name: Hinna API Management Swagger
@@ -1172,8 +1172,8 @@ paths:
                   verificationCode:
                     type: string
       x-source:
-        repository: hinna-wordpress
-        file: /src/main/java/com/hinna/wordpress/controllers/InstanceController.java
+        repository: hinna-websites
+        file: /src/main/java/com/hinna/websites/controllers/InstanceController.java
   /api/user/instance/status:
     get:
       tags:
@@ -1200,8 +1200,8 @@ paths:
                   message:
                     type: string
       x-source:
-        repository: hinna-wordpress
-        file: /src/main/java/com/hinna/wordpress/controllers/InstanceController.java
+        repository: hinna-websites
+        file: /src/main/java/com/hinna/websites/controllers/InstanceController.java
   /api/settings/roles:
     get:
       tags:
