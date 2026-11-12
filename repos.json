@@ -42,7 +42,7 @@
     "description": "Email Notifications"
   },
   {
-    "name": "hinna-wordpress",
+    "name": "hinna-websites",
     "port": 8088,
     "url": "http://localhost:8088/v3/api-docs",
     "description": "WordPress Integration"
